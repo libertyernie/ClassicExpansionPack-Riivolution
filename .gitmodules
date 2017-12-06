@@ -1,0 +1,3 @@
+[submodule "DocumentationGenerator/BrawlManagers"]
+	path = DocumentationGenerator/BrawlManagers
+	url = https://github.com/libertyernie/BrawlManagers

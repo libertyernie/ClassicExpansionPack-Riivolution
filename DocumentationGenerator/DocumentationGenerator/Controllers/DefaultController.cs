@@ -145,33 +145,47 @@ namespace DocumentationGenerator.Controllers
             "ft_zako",
         };
 
-        // GET: Default
         public ActionResult CEP() {
+            string p = new DirectoryInfo(Server.MapPath("~")).Parent.Parent.FullName;
 			return Generate(
-				@"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\DocumentationGenerator\classic_expansion_pack.csv",
-				@"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\classic_expansion_pack\RSBE01.gct",
-				NodeFactory.FromFile(null, @"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\classic_expansion_pack\system\common5_en.pac").FindChild("sc_selmap_en", false),
-				@"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\classic_expansion_pack\module",
-				NodeFactory.FromFile(null, @"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\classic_expansion_pack\info2\info_en.pac"),
-				NodeFactory.FromFile(null, @"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\classic_expansion_pack\system\common2_en.pac"),
-				@"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\classic_expansion_pack\sound\strm"
+				p + @"\DocumentationGenerator\classic_expansion_pack.csv",
+				p + @"\SDRoot\riivolution\classic_expansion_pack\RSBE01.gct",
+				NodeFactory.FromFile(null, p + @"\SDRoot\riivolution\classic_expansion_pack\system\common5_en.pac").FindChild("sc_selmap_en", false),
+				p + @"\SDRoot\riivolution\classic_expansion_pack\module",
+				NodeFactory.FromFile(null, p + @"\SDRoot\riivolution\classic_expansion_pack\info2\info_en.pac"),
+				NodeFactory.FromFile(null, p + @"\SDRoot\riivolution\classic_expansion_pack\system\common2_en.pac"),
+				p + @"\SDRoot\riivolution\classic_expansion_pack\sound\strm"
 			);
 		}
-
-		// GET: Default
+        
 		public ActionResult Omega() {
+            string p = new DirectoryInfo(Server.MapPath("~")).Parent.Parent.FullName;
 			return Generate(
-				@"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\DocumentationGenerator\omega.csv",
-				@"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\omega\RSBE01.gct",
-				NodeFactory.FromFile(null, @"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\omega\system\common5_en.pac").FindChild("sc_selmap_en", false),
-				@"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\omega\module",
-				NodeFactory.FromFile(null, @"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\omega\info2\info_en.pac"),
-				NodeFactory.FromFile(null, @"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\omega\system\common2_en.pac"),
-				@"C:\Users\admin\Documents\BrawlHacks\classic\9.0s\ClassicExpansionPack\SDRoot\riivolution\omega\sound\strm"
+				p + @"\DocumentationGenerator\omega.csv",
+				p + @"\SDRoot\riivolution\omega\RSBE01.gct",
+				NodeFactory.FromFile(null, p + @"\SDRoot\riivolution\omega\system\common5_en.pac").FindChild("sc_selmap_en", false),
+				p + @"\SDRoot\riivolution\omega\module",
+				NodeFactory.FromFile(null, p + @"\SDRoot\riivolution\omega\info2\info_en.pac"),
+				NodeFactory.FromFile(null, p + @"\SDRoot\riivolution\omega\system\common2_en.pac"),
+				p + @"\SDRoot\riivolution\omega\sound\strm"
 			);
-		}
+        }
 
-		private ActionResult Generate(string csv, string gctPath, ResourceNode sc_selmap, string relpath, ResourceNode info_pac, ResourceNode common2, string brstmPath) {
+        public ActionResult BestOf()
+        {
+            string p = new DirectoryInfo(Server.MapPath("~")).Parent.Parent.FullName;
+            return Generate(
+                p + @"\DocumentationGenerator\best_of.csv",
+                p + @"\SDRoot\riivolution\best_of\RSBE01.gct",
+                NodeFactory.FromFile(null, p + @"\SDRoot\riivolution\best_of\system\common5_en.pac").FindChild("sc_selmap_en", false),
+                p + @"\SDRoot\riivolution\best_of\module",
+                NodeFactory.FromFile(null, p + @"\SDRoot\riivolution\best_of\info2\info_en.pac"),
+                NodeFactory.FromFile(null, p + @"\SDRoot\riivolution\best_of\system\common2_en.pac"),
+                p + @"\SDRoot\riivolution\best_of\sound\strm"
+            );
+        }
+
+        private ActionResult Generate(string csv, string gctPath, ResourceNode sc_selmap, string relpath, ResourceNode info_pac, ResourceNode common2, string brstmPath) {
             Func<string, List<string>> split = s => {
                 List<string> list = new List<string>();
                 StringBuilder current = new StringBuilder();
@@ -258,8 +272,8 @@ namespace DocumentationGenerator.Controllers
 
 			var sdsl = new StageDependentSongLoader(gct);
 			foreach (CEPStage stage in stages) {
-				Song song;
-				if (sdsl.TryGetSong(stage.Stage.ID, out song)) {
+                Song song = sdsl.GetSong(stage.Stage.ID);
+                if (song != null) {
 					stage.SongFilename = song.Filename;
 					stage.SongTitle = info._strings[common2_titledata.Where(c => c.ID == song.ID).Select(c => c.Index).First()];
 					//brstms.RemoveAll(s => s == song.Filename);
